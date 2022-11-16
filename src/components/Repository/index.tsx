@@ -1,5 +1,6 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { memo } from "react";
+import { useAppData } from "../../hooks/appData";
 
 import { StarRate } from "../../icons/StarRate";
 import { RootAppParams } from "../../routes";
@@ -22,11 +23,11 @@ export type RepositoryProps = {
 
 type Props = {
   data: RepositoryProps;
-  reloadRepositories?: () => void;
 }
 
-function Repository({ data, reloadRepositories }: Props) {
+function Repository({ data }: Props) {
   const { navigate } = useNavigation<NavigationAppProps>();
+  const { reloadRepositories } = useAppData();
 
   const handleRepositoryDetails = () => {
     navigate('RepositoryDetails', { repositorySelected: data });
@@ -34,7 +35,7 @@ function Repository({ data, reloadRepositories }: Props) {
 
   const handleFavorite = () => {
     saveFavorite(data);
-    reloadRepositories && reloadRepositories();
+    reloadRepositories();
   }
 
   return(

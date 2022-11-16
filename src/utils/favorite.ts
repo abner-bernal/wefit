@@ -7,10 +7,16 @@ export const saveFavorite = async (repository: RepositoryProps) => {
   const favorites: RepositoryProps[] = storage ? JSON.parse(storage) : [];
   repository.favorite = true;
 
-  await AsyncStorage.setItem(
-    COLLECTION_FAVORITES,
-    JSON.stringify([...favorites, repository])
+  const foundRepository = favorites.find(
+    (item: RepositoryProps) => item.id === repository.id
   );
+
+  if(!foundRepository) {
+    await AsyncStorage.setItem(
+      COLLECTION_FAVORITES,
+      JSON.stringify([...favorites, repository])
+    );
+  }
 }
 
 export const removeFavorite = async (id: string) => {

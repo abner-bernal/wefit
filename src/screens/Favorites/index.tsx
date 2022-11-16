@@ -9,6 +9,7 @@ import { RootAppParams } from "../../routes";
 
 import * as S from "./styles";
 import { Header } from "../../components/Header";
+import { useAppData } from "../../hooks/appData";
 
 type Props = NativeStackScreenProps<RootAppParams>;
 
@@ -17,25 +18,7 @@ type renderItemProps = {
 };
 
 export function Favorites({ navigation }: Props) {
-  const [favorites, setFavorites] = useState<RepositoryProps[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const loadFavorites = async () => {
-    try {
-      setLoading(true);
-      const storage = await AsyncStorage.getItem(COLLECTION_FAVORITES);
-
-      if(storage) {
-        const favorites = JSON.parse(storage);      
-        setFavorites(favorites);
-      }
-      
-    } catch {
-      throw new Error('Não foi possível carregar os favoritos');
-    } finally {
-      setLoading(false);
-    }
-  }
+  const { favorites, loading, loadFavorites } = useAppData();
 
   const renderItem = useCallback(({item}: renderItemProps) => {
     return <Repository data={item} />
@@ -52,16 +35,23 @@ export function Favorites({ navigation }: Props) {
   return(
     <S.Container>
       <Header />
-      <FlatList
-        data={favorites}
-        refreshing={loading}
-        initialNumToRender={8}
-        renderItem={renderItem}
-        onRefresh={loadFavorites}
-        keyExtractor={item => item.id}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 16}}
-      />
+      {
+        !favorites[0] ?
+          <S.InfoContainer>
+            <S.InfoLabel>Nenhum Repositório Favorito :(</S.InfoLabel>
+          </S.InfoContainer>
+        :
+          <FlatList
+            data={favorites}
+            refreshing={loading}
+            initialNumToRender={8}
+            renderItem={renderItem}
+            onRefresh={loadFavorites}
+            keyExtractor={item => item.id}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{paddingBottom: 16}}
+          />
+      }
     </S.Container>
   );
 }

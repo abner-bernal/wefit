@@ -10,6 +10,7 @@ import {
 } from 'react-native-reanimated';
 
 import * as S from './styles';
+import { useAppData } from '../../hooks/appData';
 
 type Props = {
   isModalVisible: boolean;
@@ -19,6 +20,8 @@ type Props = {
 const { height: SCREEN_HEIGHT } = Dimensions.get('screen');
 
 export function SettingsBottomSheet({isModalVisible, setModalVisible}: Props) {
+  const { setUser, loadRepositories } = useAppData();
+
   const [userInput, setUserInput] = useState('');
 
   const snapPoints = useMemo(() => [230], []);
@@ -65,7 +68,9 @@ export function SettingsBottomSheet({isModalVisible, setModalVisible}: Props) {
   }), []);
 
   const handleUpdateUser = () => {
-    //mudar usuario no contexto 
+    setUser(userInput);
+    handleCloseBottomSheet();
+    loadRepositories(userInput);
   }
 
   return(
