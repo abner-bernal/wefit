@@ -18,7 +18,7 @@ type renderItemProps = {
 };
 
 export function Home({ navigation }: HomeProps) {
-  const { user, loading, repositories, reloadRepositories } = useAppData();
+  const { user, loading, repositories, loadRepositories } = useAppData();
 
   const renderItem = useCallback(({item}: renderItemProps) => {
     return <Repository data={item} />
@@ -26,7 +26,7 @@ export function Home({ navigation }: HomeProps) {
   
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      user !== '' && reloadRepositories();
+      loadRepositories();
     });
     
     return unsubscribe;
@@ -56,7 +56,7 @@ export function Home({ navigation }: HomeProps) {
             initialNumToRender={8}
             renderItem={renderItem}
             ListEmptyComponent={ListEmptyComponent}
-            onRefresh={reloadRepositories}
+            onRefresh={loadRepositories}
             keyExtractor={item => item.id}
             getItemCount={data => data.length}
             showsVerticalScrollIndicator={false}

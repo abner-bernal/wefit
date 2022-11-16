@@ -27,7 +27,7 @@ type Props = {
 
 function Repository({ data }: Props) {
   const { navigate } = useNavigation<NavigationAppProps>();
-  const { reloadRepositories } = useAppData();
+  const { loadRepositories } = useAppData();
 
   const handleRepositoryDetails = () => {
     navigate('RepositoryDetails', { repositorySelected: data });
@@ -35,7 +35,7 @@ function Repository({ data }: Props) {
 
   const handleFavorite = () => {
     saveFavorite(data);
-    reloadRepositories();
+    loadRepositories();
   }
 
   return(

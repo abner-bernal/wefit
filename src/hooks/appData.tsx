@@ -4,6 +4,7 @@ import {
   useContext,
   ReactNode,
   useState,
+  useEffect,
 } from 'react';
 import { RepositoryProps } from '../components/Repository';
 import { COLLECTION_FAVORITES } from '../configs/database';
@@ -14,8 +15,7 @@ type AppContextData = {
   setUser: (param: string) => void;
   repositories: RepositoryProps[];
   favorites: RepositoryProps[];
-  loadRepositories: (param: string) => void;
-  reloadRepositories: () => void
+  loadRepositories: () => void;
   loadFavorites: () => void;
   loading: boolean;
 }
@@ -32,19 +32,15 @@ function AppDataProvider({ children }: AppDataProviderProps) {
   const [user, setUser] = useState<string>('');
   const [loading, setLoading] = useState(false);
 
-  const loadRepositories = (enteredUser: string) => {
-    searchRepositories(enteredUser);
-  }
+  useEffect(() => {
+    loadRepositories();
+  }, [user]);
 
-  const reloadRepositories = () => {
-    searchRepositories(undefined);
-  }
-
-  const searchRepositories = async (enteredUser: string | undefined = user) => {
+  const loadRepositories = async () => {
     try {
       setLoading(true);
-      if(enteredUser !== '') {
-        const responseData = await api.get(`/users/${enteredUser}/repos`);
+      if(user !== '') {
+        const responseData = await api.get(`/users/${user}/repos`);
         const storage = await AsyncStorage.getItem(COLLECTION_FAVORITES);
         const favorites = storage ? JSON.parse(storage) : [];
   
@@ -107,7 +103,6 @@ function AppDataProvider({ children }: AppDataProviderProps) {
       favorites,
       loadFavorites,
       loadRepositories,
-      reloadRepositories,
     }}>
       {children}
     </AppDataContext.Provider>

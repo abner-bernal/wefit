@@ -70,7 +70,6 @@ export function SettingsBottomSheet({isModalVisible, setModalVisible}: Props) {
   const handleUpdateUser = () => {
     setUser(userInput);
     handleCloseBottomSheet();
-    loadRepositories(userInput);
   }
 
   return(
@@ -105,8 +104,8 @@ export function SettingsBottomSheet({isModalVisible, setModalVisible}: Props) {
               <S.CancelButton onPress={handleCloseBottomSheet}>
                 <S.CancelLabel>Cancelar</S.CancelLabel>
               </S.CancelButton>
-              <S.SaveButton>
-                <S.SaveLabel onPress={handleUpdateUser}>Salvar</S.SaveLabel>
+              <S.SaveButton onPress={handleUpdateUser}>
+                <S.SaveLabel>Salvar</S.SaveLabel>
               </S.SaveButton>
             </S.ButtonsContainer>
           </S.Content>
