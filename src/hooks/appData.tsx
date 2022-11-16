@@ -75,7 +75,7 @@ function AppDataProvider({ children }: AppDataProviderProps) {
         setRepositories([...repositoriesData]);
       }
     } catch {
-      throw new Error('Não foi possível carregar os repositórios');
+      setRepositories([]);
     } finally {
       setLoading(false);
     }

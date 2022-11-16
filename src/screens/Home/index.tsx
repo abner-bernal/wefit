@@ -10,7 +10,6 @@ import * as S from "./styles";
 import { Header } from "../../components/Header";
 import { useAppData } from "../../hooks/appData";
 import { SettingsFilled } from "../../icons/SettingsFilled";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type HomeProps = NativeStackScreenProps<RootAppParams>;
 
@@ -20,18 +19,26 @@ type renderItemProps = {
 
 export function Home({ navigation }: HomeProps) {
   const { user, loading, repositories, reloadRepositories } = useAppData();
-  
+
   const renderItem = useCallback(({item}: renderItemProps) => {
     return <Repository data={item} />
   }, []);
-
+  
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       user !== '' && reloadRepositories();
     });
-
+    
     return unsubscribe;
   }, [navigation]);
+  
+  const ListEmptyComponent = useCallback(() => {
+    return(
+      <S.InfoContainer>
+        <S.InfoLabel>Não foi possível encontrar usuário</S.InfoLabel>
+      </S.InfoContainer>
+    );
+  }, []);
 
   return(
     <S.Container>
@@ -48,6 +55,7 @@ export function Home({ navigation }: HomeProps) {
             refreshing={loading}
             initialNumToRender={8}
             renderItem={renderItem}
+            ListEmptyComponent={ListEmptyComponent}
             onRefresh={reloadRepositories}
             keyExtractor={item => item.id}
             getItemCount={data => data.length}

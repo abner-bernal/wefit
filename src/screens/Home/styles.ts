@@ -8,6 +8,7 @@ export const InfoContainer = styled.View`
   align-items: center;
   justify-content: center;
   flex-direction: row;
+  min-height: 200px;
   flex: 1;
 `;
 
