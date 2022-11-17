@@ -76,7 +76,8 @@ export function SettingsBottomSheet({isModalVisible, setModalVisible}: Props) {
 
   const handleUpdateUser = () => {
     const newUser = userInput.trim().toLowerCase();
-
+    
+    setUserInput('');
     if(newUser !== '') {
       setUser(newUser);
       navigate('Home');
