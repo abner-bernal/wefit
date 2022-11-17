@@ -1,22 +1,18 @@
-import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { useCallback, useEffect } from "react";
 import { VirtualizedList } from "react-native";
+import { useCallback } from "react";
 
 import Repository, { RepositoryProps } from "../../components/Repository";
 import { SettingsFilled } from "../../icons/SettingsFilled";
-import { RootTabParams } from "../../routes/tab.routes";
 import { Header } from "../../components/Header";
 import { useAppData } from "../../hooks/appData";
 
 import * as S from "./styles";
 
-type HomeProps = BottomTabScreenProps<RootTabParams>;
-
 type renderItemProps = {
   item: RepositoryProps;
 };
 
-export function Home({ navigation }: HomeProps) {
+export function Home() {
   const { 
     user, 
     loading, 
@@ -35,14 +31,6 @@ export function Home({ navigation }: HomeProps) {
       </S.InfoContainer>
     );
   }, []);
-  
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      loadRepositories();
-    });
-    
-    return unsubscribe;
-  }, [navigation]);
   
   return(
     <S.Container>

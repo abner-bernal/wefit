@@ -1,16 +1,16 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { removeFavorite, saveFavorite } from '../../utils/favorite';
 import { FavoriteButton } from '../../components/FavoriteButton';
 import { RepositoryProps } from '../../components/Repository';
 import { LinkFilled } from '../../icons/LinkFilled';
 import { ArrowLeft } from '../../icons/ArrowLeft';
+import { useAppData } from '../../hooks/appData';
 import { RootAppParams } from '../../routes';
 
 import * as S from './styles';
-import { useAppData } from '../../hooks/appData';
 
 type Props = NativeStackScreenProps<RootAppParams>;
 
@@ -18,7 +18,7 @@ type Params = {
   repositorySelected: RepositoryProps;
 }
 
-export function RepositoryDetails({ navigation, navigation: { goBack }, route }: Props) {
+export function RepositoryDetails({ navigation: { goBack }, route }: Props) {
   const { loadFavorites, loadRepositories } = useAppData();
   
   const { repositorySelected, repositorySelected : {
@@ -35,16 +35,9 @@ export function RepositoryDetails({ navigation, navigation: { goBack }, route }:
   const handlePressFavorite = () => {
     isFavorite ? removeFavorite(id) : saveFavorite(repositorySelected);
     setIsFavorite(!isFavorite);
+    loadRepositories();
+    loadFavorites();
   }
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      loadFavorites();
-      loadRepositories();
-    });
-
-    return unsubscribe;
-  }, [navigation]);
 
   return(
     <S.Container>
