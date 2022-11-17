@@ -6,18 +6,21 @@ import {
   useState,
   useEffect,
 } from 'react';
-import { RepositoryProps } from '../components/Repository';
+
 import { COLLECTION_FAVORITES } from '../configs/database';
+import { RepositoryProps } from '../components/Repository';
 import { api } from '../services/api';
+import { AxiosResponse } from 'axios';
 
 type AppContextData = {
-  user: string;
   setUser: (param: string) => void;
-  repositories: RepositoryProps[];
+  currentRepositories: RepositoryProps[];
+  reloadRepositories: () => void;
   favorites: RepositoryProps[];
   loadRepositories: () => void;
   loadFavorites: () => void;
   loading: boolean;
+  user: string;
 }
 
 type AppDataProviderProps = {
@@ -27,55 +30,90 @@ type AppDataProviderProps = {
 const AppDataContext = createContext({} as AppContextData);
 
 function AppDataProvider({ children }: AppDataProviderProps) {
-  const [repositories, setRepositories] = useState<RepositoryProps[]>([]);
+  const [generalRepositories, setGeneralRepositories] = useState<RepositoryProps[]>([]);
+  const [currentRepositories, setCurrentRepositories] = useState<RepositoryProps[]>([]);
   const [favorites, setFavorites] = useState<RepositoryProps[]>([]);
-  const [user, setUser] = useState<string>('');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    loadRepositories();
-  }, [user]);
-
+  const [user, setUser] = useState<string>('');
+    
   const loadRepositories = async () => {
     try {
       setLoading(true);
       if(user !== '') {
         const responseData = await api.get(`/users/${user}/repos`);
+
         const storage = await AsyncStorage.getItem(COLLECTION_FAVORITES);
-        const favorites = storage ? JSON.parse(storage) : [];
-  
-        const repositoriesData: RepositoryProps[] = responseData.data.reduce(
-          (result: RepositoryProps[], item: any) => {
-            const foundRepository: RepositoryProps = favorites.find(
+        const storageFavorites: RepositoryProps[] = storage ? JSON.parse(storage) : [];
+        
+        const response: RepositoryProps[] = responseData.data.map(
+          (item: any) => {
+            const foundRepository = storageFavorites.find(
               (repository: RepositoryProps) => repository.id === item.id
             );
-  
+
             const isFavorite = foundRepository !== undefined;
-  
-            if(!isFavorite) {
-              result.push({
-                id: item.id,
-                htmlUrl: item.html_url,
-                language: item.language,
-                fullName: item.full_name,
-                description: item.description,
-                avatarUrl: item.owner.avatar_url,
-                stargazersCount: item.stargazers_count,
-                favorite: isFavorite,
-              });
-            }
-            return result;
-          }, []
+
+            return({
+              id: item.id,
+              htmlUrl: item.html_url,
+              language: item.language,
+              fullName: item.full_name,
+              description: item.description,
+              avatarUrl: item.owner.avatar_url,
+              stargazersCount: item.stargazers_count,
+              favorite: isFavorite,
+            });
+          }
         );
-        
-        setRepositories([...repositoriesData]);
+
+        setGeneralRepositories([...response]);
       }
     } catch {
-      setRepositories([]);
+      setGeneralRepositories([]);
     } finally {
       setLoading(false);
     }
   }
+
+  const reloadRepositories = async () => {
+    const storage = await AsyncStorage.getItem(COLLECTION_FAVORITES);
+    const storageFavorites: RepositoryProps[] = storage ? JSON.parse(storage) : [];
+
+    const response: RepositoryProps[] = generalRepositories.reduce(
+      (result: RepositoryProps[], item: RepositoryProps) => {
+
+        const foundRepository = storageFavorites.find(
+          (repository: RepositoryProps) => repository.id === item.id
+        );
+
+        const isFavorite = foundRepository !== undefined;
+
+        if(!isFavorite) {
+          result.push({
+            id: item.id,
+            htmlUrl: item.htmlUrl,
+            language: item.language,
+            fullName: item.fullName,
+            description: item.description,
+            avatarUrl: item.avatarUrl,
+            stargazersCount: item.stargazersCount,
+            favorite: isFavorite,
+          });
+        }
+        return result;
+      }, []
+    );
+
+    setCurrentRepositories([...response]);
+  };
+
+  useEffect(() => {
+    reloadRepositories();
+  }, [generalRepositories]);
+
+  useEffect(() => {
+    loadRepositories();
+  }, [user]);
 
   const loadFavorites = async () => {
     try {
@@ -84,7 +122,7 @@ function AppDataProvider({ children }: AppDataProviderProps) {
 
       if(storage) {
         const favorites = JSON.parse(storage);      
-        setFavorites(favorites);
+        setFavorites([...favorites]);
       }
       
     } catch {
@@ -99,7 +137,8 @@ function AppDataProvider({ children }: AppDataProviderProps) {
       user,
       setUser,
       loading,
-      repositories,
+      currentRepositories,
+      reloadRepositories,
       favorites,
       loadFavorites,
       loadRepositories,

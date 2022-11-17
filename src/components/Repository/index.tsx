@@ -1,10 +1,10 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { memo } from "react";
-import { useAppData } from "../../hooks/appData";
 
+import { saveFavorite } from "../../utils/favorite";
+import { useAppData } from "../../hooks/appData";
 import { StarRate } from "../../icons/StarRate";
 import { RootAppParams } from "../../routes";
-import { saveFavorite } from "../../utils/favorite";
 
 import * as S from './styles';
 

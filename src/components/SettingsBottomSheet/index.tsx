@@ -1,5 +1,7 @@
 import { Dimensions, Keyboard, Modal, StyleProp, ViewStyle } from 'react-native';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { RootTabParams } from '../../routes/tab.routes';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useTheme } from 'styled-components';
 import { 
@@ -9,26 +11,31 @@ import {
   useSharedValue 
 } from 'react-native-reanimated';
 
-import * as S from './styles';
 import { useAppData } from '../../hooks/appData';
 
+import * as S from './styles';
+
+type NavigationTabProps = NavigationProp<RootTabParams>;
+
 type Props = {
-  isModalVisible: boolean;
   setModalVisible: (param: boolean) => void;
+  isModalVisible: boolean;
 }
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('screen');
 
 export function SettingsBottomSheet({isModalVisible, setModalVisible}: Props) {
-  const { setUser, loadRepositories } = useAppData();
-
-  const [userInput, setUserInput] = useState('');
-
-  const snapPoints = useMemo(() => [230], []);
+  const { navigate } = useNavigation<NavigationTabProps>();
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
+  const [userInput, setUserInput] = useState('');
+
   const position = useSharedValue(SCREEN_HEIGHT);
+
+  const snapPoints = useMemo(() => [230], []);
+
+  const { setUser } = useAppData();
 
   const { colors } = useTheme();
 
@@ -70,6 +77,7 @@ export function SettingsBottomSheet({isModalVisible, setModalVisible}: Props) {
   const handleUpdateUser = () => {
     setUser(userInput);
     handleCloseBottomSheet();
+    userInput !== '' && navigate('Home');
   }
 
   return(

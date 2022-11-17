@@ -3,26 +3,26 @@ import Constants from 'expo-constants';
 
 export const Container = styled.View`
   ${({theme}) => css`
-    position: fixed;
-    flex-direction: row;
-    justify-content: space-between;
-    height: ${Constants.statusBarHeight + 56}px;
-    padding: ${Constants.statusBarHeight}px 0 0 16px;
     background-color: ${theme.colors.secondaryBackground};
+    padding: ${Constants.statusBarHeight}px 0 0 16px;
+    height: ${Constants.statusBarHeight + 56}px;
+    justify-content: space-between;
+    flex-direction: row;
+    position: fixed;
   `}
 `;
 
 export const Title = styled.Text`
   ${({theme}) =>  css`
-    font-size: 20px;
-    font-weight: 500;
-    align-self: center;
-    letter-spacing: 0.15px;
     color: ${theme.colors.heading90};
+    letter-spacing: 0.15px;
+    align-self: center;
+    font-weight: 500;
+    font-size: 20px;
   `}
 `;
 
 export const SettingsButton = styled.Pressable`
-  padding: 0 20px;
   justify-content: center;
+  padding: 0 20px;
 `;

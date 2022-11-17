@@ -1,17 +1,15 @@
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useCallback, useEffect, useState } from "react";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { useCallback, useEffect } from "react";
 import { FlatList } from "react-native";
 
 import Repository, { RepositoryProps } from "../../components/Repository";
-import { COLLECTION_FAVORITES } from "../../configs/database";
-import { RootAppParams } from "../../routes";
-
-import * as S from "./styles";
+import { RootTabParams } from "../../routes/tab.routes";
 import { Header } from "../../components/Header";
 import { useAppData } from "../../hooks/appData";
 
-type Props = NativeStackScreenProps<RootAppParams>;
+import * as S from "./styles";
+
+type Props = BottomTabScreenProps<RootTabParams>;
 
 type renderItemProps = {
   item: RepositoryProps;

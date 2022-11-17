@@ -17,8 +17,8 @@ export function Header() {
         </S.SettingsButton>
       </S.Container>
       <SettingsBottomSheet 
-        isModalVisible={isModalVisible} 
         setModalVisible={setModalVisible}
+        isModalVisible={isModalVisible} 
       />
     </>
   );

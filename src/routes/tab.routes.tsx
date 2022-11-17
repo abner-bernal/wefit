@@ -1,12 +1,11 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-import { StarFilled } from '../icons/StarFilled';
-import { GitHub } from '../icons/GitHub';
+import { useTheme } from 'styled-components';
 
 import { Favorites } from '../screens/Favorites';
 import { Home } from '../screens/Home';
-import { useTheme } from 'styled-components';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+
+import { StarFilled } from '../icons/StarFilled';
+import { GitHub } from '../icons/GitHub';
 
 export type RootTabParams = {
   Home: undefined;
@@ -17,12 +16,12 @@ const { Navigator, Screen } = createBottomTabNavigator<RootTabParams>();
 
 export function TabRoutes() {
   const { colors } = useTheme();
-  
+
   return(
     <Navigator
       screenOptions={{
-        tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.tabBarInactive,
+        tabBarActiveTintColor: colors.primary,
         headerShown: false,
       }}
       sceneContainerStyle={{

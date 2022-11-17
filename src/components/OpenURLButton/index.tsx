@@ -2,11 +2,10 @@ import { Alert, Linking, Pressable, PressableProps } from "react-native";
 import { ReactNode, useCallback } from "react";
 
 type Props = PressableProps & {
-  url: string;
   children?: ReactNode;
+  url: string;
 }
 export function OpenURLButton({ url, children, ...rest }: Props) {
-
   const handlePress = useCallback(async () => {
     const supported = await Linking.canOpenURL(url);
 

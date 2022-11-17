@@ -21,6 +21,7 @@ export const saveFavorite = async (repository: RepositoryProps) => {
 
 export const removeFavorite = async (id: string) => {
   const storage = await AsyncStorage.getItem(COLLECTION_FAVORITES);
+
   if(storage) {
     let favorites: RepositoryProps[] = JSON.parse(storage);
 
@@ -28,11 +29,13 @@ export const removeFavorite = async (id: string) => {
       (repository: RepositoryProps) => repository.id === id
     );
 
-    favorites.splice(index, 1);
-
-    await AsyncStorage.setItem(
-      COLLECTION_FAVORITES,
-      JSON.stringify([...favorites])
-    );
+    if(index > -1) {
+      favorites.splice(index, 1);
+  
+      await AsyncStorage.setItem(
+        COLLECTION_FAVORITES,
+        JSON.stringify([...favorites])
+      );
+    }
   }
 }
