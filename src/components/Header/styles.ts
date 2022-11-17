@@ -24,4 +24,5 @@ export const Title = styled.Text`
 export const SettingsButton = styled.Pressable`
   justify-content: center;
   padding: 0 20px;
+  background-color: red;
 `;

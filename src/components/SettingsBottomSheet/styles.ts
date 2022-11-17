@@ -18,6 +18,7 @@ export const Overlay = styled(AnimatedPressable)`
 
 export const Content = styled(BottomSheetView)`
   padding: 0 16px 16px;
+  min-height: 230px;
 `;
 
 export const Title = styled.Text`
@@ -29,7 +30,7 @@ export const Title = styled.Text`
   `}
 `;
 
-export const InputContainer = styled.View`
+export const InputContainer = styled(BottomSheetView)`
   ${({theme}) =>  css`
     border-bottom-color: ${theme.colors.inputBorderBottom};
     background-color: ${theme.colors.inputBackground};
@@ -72,6 +73,7 @@ const Button = styled.Pressable`
   align-items: center;
   border-radius: 4px;
   padding: 10px 0;
+  height: 100%;
   flex: 1;
 `;
 
