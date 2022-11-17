@@ -19,7 +19,7 @@ type Params = {
 }
 
 export function RepositoryDetails({ navigation, navigation: { goBack }, route }: Props) {
-  const { loadFavorites, reloadRepositories } = useAppData();
+  const { loadFavorites, loadRepositories } = useAppData();
   
   const { repositorySelected, repositorySelected : {
     id,
@@ -40,7 +40,7 @@ export function RepositoryDetails({ navigation, navigation: { goBack }, route }:
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       loadFavorites();
-      reloadRepositories();
+      loadRepositories();
     });
 
     return unsubscribe;

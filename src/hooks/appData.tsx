@@ -10,12 +10,10 @@ import {
 import { COLLECTION_FAVORITES } from '../configs/database';
 import { RepositoryProps } from '../components/Repository';
 import { api } from '../services/api';
-import { AxiosResponse } from 'axios';
 
 type AppContextData = {
   setUser: (param: string) => void;
-  currentRepositories: RepositoryProps[];
-  reloadRepositories: () => void;
+  repositories: RepositoryProps[];
   favorites: RepositoryProps[];
   loadRepositories: () => void;
   loadFavorites: () => void;
@@ -30,8 +28,7 @@ type AppDataProviderProps = {
 const AppDataContext = createContext({} as AppContextData);
 
 function AppDataProvider({ children }: AppDataProviderProps) {
-  const [generalRepositories, setGeneralRepositories] = useState<RepositoryProps[]>([]);
-  const [currentRepositories, setCurrentRepositories] = useState<RepositoryProps[]>([]);
+  const [repositories, setRepositories] = useState<RepositoryProps[]>([]);
   const [favorites, setFavorites] = useState<RepositoryProps[]>([]);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<string>('');
@@ -44,77 +41,41 @@ function AppDataProvider({ children }: AppDataProviderProps) {
 
         const storage = await AsyncStorage.getItem(COLLECTION_FAVORITES);
         const storageFavorites: RepositoryProps[] = storage ? JSON.parse(storage) : [];
-        
-        const response: RepositoryProps[] = responseData.data.map(
-          (item: any) => {
+
+        const response: RepositoryProps[] = responseData.data.reduce(
+          (result: RepositoryProps[], item: any) => {
             const foundRepository = storageFavorites.find(
               (repository: RepositoryProps) => repository.id === item.id
             );
 
             const isFavorite = foundRepository !== undefined;
 
-            return({
-              id: item.id,
-              htmlUrl: item.html_url,
-              language: item.language,
-              fullName: item.full_name,
-              description: item.description,
-              avatarUrl: item.owner.avatar_url,
-              stargazersCount: item.stargazers_count,
-              favorite: isFavorite,
-            });
-          }
+            if(!isFavorite) {
+              result.push({
+                id: item.id,
+                htmlUrl: item.html_url,
+                language: item.language,
+                fullName: item.full_name,
+                description: item.description,
+                avatarUrl: item.owner.avatar_url,
+                stargazersCount: item.stargazers_count,
+                favorite: isFavorite,
+              });
+            };
+
+            return result;
+          }, []
         );
 
-        setGeneralRepositories([...response]);
+        setRepositories([...response]);
       }
     } catch {
-      setGeneralRepositories([]);
+      setRepositories([]);
     } finally {
       setLoading(false);
     }
   }
-
-  const reloadRepositories = async () => {
-    const storage = await AsyncStorage.getItem(COLLECTION_FAVORITES);
-    const storageFavorites: RepositoryProps[] = storage ? JSON.parse(storage) : [];
-
-    const response: RepositoryProps[] = generalRepositories.reduce(
-      (result: RepositoryProps[], item: RepositoryProps) => {
-
-        const foundRepository = storageFavorites.find(
-          (repository: RepositoryProps) => repository.id === item.id
-        );
-
-        const isFavorite = foundRepository !== undefined;
-
-        if(!isFavorite) {
-          result.push({
-            id: item.id,
-            htmlUrl: item.htmlUrl,
-            language: item.language,
-            fullName: item.fullName,
-            description: item.description,
-            avatarUrl: item.avatarUrl,
-            stargazersCount: item.stargazersCount,
-            favorite: isFavorite,
-          });
-        }
-        return result;
-      }, []
-    );
-
-    setCurrentRepositories([...response]);
-  };
-
-  useEffect(() => {
-    reloadRepositories();
-  }, [generalRepositories]);
-
-  useEffect(() => {
-    loadRepositories();
-  }, [user]);
-
+  
   const loadFavorites = async () => {
     try {
       setLoading(true);
@@ -132,14 +93,17 @@ function AppDataProvider({ children }: AppDataProviderProps) {
     }
   }
 
+  useEffect(() => {
+    loadRepositories();
+  }, [user]);
+
   return (
     <AppDataContext.Provider value={{
       user,
       setUser,
       loading,
-      currentRepositories,
-      reloadRepositories,
       favorites,
+      repositories,
       loadFavorites,
       loadRepositories,
     }}>

@@ -20,9 +20,8 @@ export function Home({ navigation }: HomeProps) {
   const { 
     user, 
     loading, 
-    loadRepositories, 
-    reloadRepositories,
-    currentRepositories, 
+    repositories,
+    loadRepositories,
   } = useAppData();
 
   const renderItem = useCallback(({item}: renderItemProps) => {
@@ -56,7 +55,7 @@ export function Home({ navigation }: HomeProps) {
           </S.InfoContainer>
         :
           <VirtualizedList
-            data={currentRepositories}
+            data={repositories}
             refreshing={loading}
             initialNumToRender={8}
             renderItem={renderItem}
