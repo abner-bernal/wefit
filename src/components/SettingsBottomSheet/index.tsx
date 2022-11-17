@@ -1,7 +1,6 @@
 import { Dimensions, Keyboard, Modal, StyleProp, ViewStyle } from 'react-native';
-import { useCallback, useMemo, useRef, useState } from 'react';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { RootTabParams } from '../../routes/tab.routes';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { useTheme } from 'styled-components';
 import { 
@@ -11,6 +10,7 @@ import {
   useSharedValue 
 } from 'react-native-reanimated';
 
+import { RootTabParams } from '../../routes/tab.routes';
 import { useAppData } from '../../hooks/appData';
 
 import * as S from './styles';
@@ -75,9 +75,13 @@ export function SettingsBottomSheet({isModalVisible, setModalVisible}: Props) {
   }), []);
 
   const handleUpdateUser = () => {
-    setUser(userInput);
+    const newUser = userInput.trim().toLowerCase();
+
+    if(newUser !== '') {
+      setUser(newUser);
+      navigate('Home');
+    }
     handleCloseBottomSheet();
-    userInput !== '' && navigate('Home');
   }
 
   return(

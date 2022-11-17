@@ -5,6 +5,7 @@ type Props = PressableProps & {
   children?: ReactNode;
   url: string;
 }
+
 export function OpenURLButton({ url, children, ...rest }: Props) {
   const handlePress = useCallback(async () => {
     const supported = await Linking.canOpenURL(url);

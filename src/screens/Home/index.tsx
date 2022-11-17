@@ -36,7 +36,7 @@ export function Home() {
     <S.Container>
       <Header />
       {
-        user === '' ?
+        !user ?
           <S.InfoContainer>
             <S.InfoLabel>Insira um Usuário no ícone</S.InfoLabel>
             <SettingsFilled />

@@ -18,7 +18,7 @@ type AppContextData = {
   loadRepositories: () => void;
   loadFavorites: () => void;
   loading: boolean;
-  user: string;
+  user: string | undefined;
 }
 
 type AppDataProviderProps = {
@@ -31,7 +31,7 @@ function AppDataProvider({ children }: AppDataProviderProps) {
   const [repositories, setRepositories] = useState<RepositoryProps[]>([]);
   const [favorites, setFavorites] = useState<RepositoryProps[]>([]);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<string>('');
+  const [user, setUser] = useState<string>();
     
   const loadRepositories = async () => {
     try {

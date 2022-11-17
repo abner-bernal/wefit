@@ -35,8 +35,8 @@ export function RepositoryDetails({ navigation: { goBack }, route }: Props) {
   const handlePressFavorite = () => {
     isFavorite ? removeFavorite(id) : saveFavorite(repositorySelected);
     setIsFavorite(!isFavorite);
-    loadRepositories();
     loadFavorites();
+    loadRepositories();
   }
 
   return(

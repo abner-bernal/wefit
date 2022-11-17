@@ -8,7 +8,6 @@ export const Container = styled.View`
     height: ${Constants.statusBarHeight + 56}px;
     justify-content: space-between;
     flex-direction: row;
-    position: fixed;
   `}
 `;
 
